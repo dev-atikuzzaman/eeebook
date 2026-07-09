@@ -1,2 +1,131 @@
-# eeebook
-EEE Book
+# ⚡ ElectroDict — EEE টেকনিক্যাল ডিকশনারি (PWA)
+
+> ৮০/২০ নীতিতে A–Z ইলেকট্রিক্যাল ও ইলেকট্রনিক্স ইঞ্জিনিয়ারিং শব্দভাণ্ডার | ১০ বিষয়ে ২০০ টার্ম | Supabase Real-time | PWA
+
+CSHelp (সাইবার সিকিউরিটি ডিকশনারি)-এর একই আর্কিটেকচার ও ডিজাইন লজিক অনুসরণ করে তৈরি, EEE-এর জন্য পুনর্নির্মিত।
+
+## 📚 কভারেজ (১০ বিষয় × ২০ টার্ম)
+
+| বিষয় | রেফারেন্স বই |
+|---|---|
+| ⚡ Electrical Circuit | Sadiku — Fundamentals of Electric Circuits |
+| 🔌 Electronics Circuit | Sedra & Smith — Microelectronic Circuits |
+| 🏭 Power System | Stevenson & Sadat — Power System Analysis |
+| ⚙️ Electrical Machines | Chapman / Hubert / Wildi |
+| 📡 Communication System | Lathi / Haykin / Sanjay Sharma |
+| 🎛️ Control System | Nise — Control Systems Engineering |
+| 🔢 Digital Electronics | Mano — Digital Design |
+| 🔋 Power Electronics | Rashid — Power Electronics |
+| 〰️ Signals & Systems | Oppenheim & Willsky / Proakis |
+| 🧲 Electromagnetic Theory | Hayt — Engineering Electromagnetics |
+
+প্রতিটি টার্মে থাকছে: সংজ্ঞা, সহজ বাংলা অ্যানালজি, ব্যবহার ক্ষেত্র (use case), বাস্তব উদাহরণ, সূত্র ও চলকের সম্পর্ক, এবং রিয়েল-লাইফ অ্যাপ্লিকেশন — সম্পূর্ণ বাংলায়। ছবির বদলে প্রতিটি টার্মের জন্য কাস্টম ভেক্টর ইঞ্জিনিয়ারিং আইকন ব্যবহার করা হয়েছে (কপিরাইট-মুক্ত, অফলাইনেও কাজ করে)।
+
+## ⚡ DEPLOY করার ধাপ (১৫ মিনিট)
+
+### ধাপ ১ — Supabase সেটআপ
+
+1. [supabase.com](https://supabase.com) → **New Project** তৈরি করুন
+2. **SQL Editor** → `supabase_setup.sql`-এর সম্পূর্ণ কনটেন্ট paste করুন → **Run** (schema + ২০০ টার্ম একসাথে insert হবে)
+3. **Project Settings → API** থেকে নিন:
+   - `Project URL` → `REACT_APP_SUPABASE_URL`
+   - `anon public key` → `REACT_APP_SUPABASE_ANON_KEY`
+
+> Supabase সেটআপ না করলেও অ্যাপ পুরোপুরি কাজ করবে — তখন `src/data/terms.js`-এর বিল্ট-ইন ২০০ টার্ম অফলাইন-ফার্স্ট ফলব্যাক হিসেবে ব্যবহৃত হবে।
+
+### ধাপ ২ — GitHub-এ Push
+
+```bash
+git init
+git add .
+git commit -m "⚡ ElectroDict EEE Dictionary PWA"
+git branch -M main
+git remote add origin https://github.com/YOUR_USERNAME/electrodict-eee.git
+git push -u origin main
+```
+
+### ধাপ ৩ — Vercel Deploy
+
+1. [vercel.com](https://vercel.com) → **Add New Project** → GitHub repo import
+2. **Settings → Environment Variables** → দুটো variable যোগ করুন:
+   ```
+   REACT_APP_SUPABASE_URL      = https://xxxx.supabase.co
+   REACT_APP_SUPABASE_ANON_KEY = eyJhbGc...
+   ```
+3. **Deploy** বাটনে ক্লিক করুন ✅
+
+### ধাপ ৪ — PWA Install (Optional)
+
+Chrome/Edge-এ URL-এ গিয়ে address bar-এর ⊕ বোতামে ক্লিক করুন, বা মোবাইলে "Add to Home Screen"।
+
+---
+
+## 🏗️ Project Structure
+
+```
+electrodict-eee/
+├── public/
+│   ├── index.html          # PWA HTML
+│   ├── manifest.json       # PWA manifest
+│   ├── sw.js                # Service Worker (offline)
+│   ├── favicon.ico / logo192.png / logo512.png
+├── src/
+│   ├── App.js               # Main app + Supabase real-time
+│   ├── index.js             # Entry point
+│   ├── index.css            # Tailwind + custom styles
+│   ├── lib/
+│   │   └── supabase.js      # Supabase client
+│   ├── data/
+│   │   └── terms.js         # SUBJECTS + SEED_TERMS (২০০ টার্ম, অফলাইন ফলব্যাক)
+│   └── components/
+│       ├── Header.js        # Search + Subject filter + A-Z filter
+│       ├── StatsBar.js      # Stats dashboard
+│       ├── TermCard.js      # Grid/List card (কাস্টম আইকন সহ)
+│       ├── TermModal.js     # Detail modal (৫ ট্যাব)
+│       ├── icons.js         # ৫৮টি কাস্টম SVG ইঞ্জিনিয়ারিং আইকন
+│       └── constants.js     # Importance রঙ, Subject গ্রেডিয়েন্ট, ট্যাব লিস্ট
+├── supabase_setup.sql       # DB schema + ২০০ টার্ম seed data
+├── Vercel.json               # Vercel config
+├── tailwind.config.js
+├── package.json
+└── .env.example
+```
+
+## ✨ ফিচার
+
+- 🔴 **Real-time** — Supabase Realtime subscription (INSERT/UPDATE/DELETE সাথে সাথে UI-তে আপডেট)
+- 📱 **PWA** — Install করুন, অফলাইনে কাজ করে
+- 🔍 **Smart Search** — term, tag, বিষয়, সংজ্ঞা, সূত্র, প্রয়োগ, রেফারেন্স বই — সব খোঁজে
+- 🏷️ **Subject Filter** — ১০টি বিষয় দিয়ে ফিল্টার, প্রতিটির নিজস্ব রঙ
+- 🔤 **A–Z Filter** — অক্ষর দিয়ে ফিল্টার
+- ⭐ **Favorites** — localStorage-এ persist
+- 🧮 **৫-Tab Detail** — সংজ্ঞা, অ্যানালজি, ব্যবহার, সূত্র, প্রয়োগ
+- 🎨 **কাস্টম SVG আইকন** — প্রতিটি টার্মের জন্য প্রাসঙ্গিক ইঞ্জিনিয়ারিং সিম্বল
+- 🌐 **Online/Offline** indicator
+- 📊 **Stats Dashboard**
+- 🎨 **কালারফুল ডার্ক থিম** — প্রতিটি বিষয়ের নিজস্ব গ্রেডিয়েন্ট (Dribbble-inspired)
+
+## 📦 Dependencies
+
+```bash
+npm install
+```
+
+Main: `react`, `react-dom`, `@supabase/supabase-js`
+Dev: `tailwindcss`, `autoprefixer`, `postcss`
+
+## 🔧 Local Development
+
+```bash
+cp .env.example .env.local
+# .env.local-এ আপনার Supabase keys বসান (ঐচ্ছিক)
+
+npm install
+npm start
+```
+
+## 📝 নতুন টার্ম যোগ করা
+
+একটি একক সোর্স-অফ-ট্রুথ পদ্ধতি ব্যবহার করা হয়েছে: `src/data/terms.js`-এর `SEED_TERMS` অ্যারেতে বা সরাসরি Supabase টেবিলে (`eee_terms`) নতুন সারি insert করলে তা রিয়েল-টাইমে সব ব্যবহারকারীর কাছে পৌঁছে যাবে। প্রতিটি টার্মের ফিল্ড: `term, letter, subject, book, importance, icon, short, definition, analogy, useCase/use_case, example, relation, application, tags`।
+
+`icon` ফিল্ডে `src/components/icons.js`-এ সংজ্ঞায়িত যেকোনো একটি key ব্যবহার করুন (না মিললে ডিফল্ট আইকন দেখাবে)।
