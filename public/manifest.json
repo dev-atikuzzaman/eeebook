@@ -1,0 +1,16 @@
+{
+  "short_name": "ElectroDict",
+  "name": "ElectroDict — ইলেকট্রিক্যাল ও ইলেকট্রনিক্স ইঞ্জিনিয়ারিং অভিধান",
+  "description": "৮০/২০ নীতিতে A-Z EEE টেকনিক্যাল শব্দভাণ্ডার, ১০ বিষয়ে ২০০ টার্ম",
+  "icons": [
+    { "src": "favicon.ico", "sizes": "64x64 32x32 24x24 16x16", "type": "image/x-icon" },
+    { "src": "logo192.png", "type": "image/png", "sizes": "192x192" },
+    { "src": "logo512.png", "type": "image/png", "sizes": "512x512" }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#fbbf24",
+  "background_color": "#030712",
+  "orientation": "portrait-primary",
+  "categories": ["education", "engineering", "reference"]
+}
