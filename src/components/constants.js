@@ -20,6 +20,28 @@ export const SUBJECT_META = {
   electromagnetic:   { name: "Electromagnetic Theory",   bn: "তড়িৎ-চুম্বকীয় তত্ত্ব",      book: "Hayt — Engineering Electromagnetics",               gradient: "from-teal-400 to-cyan-800",      emoji: "🧲" },
 };
 
+// PDF এক্সপোর্ট ও অন্যান্য ক্যানভাস-ভিত্তিক রেন্ডারিং-এর জন্য প্লেইন হেক্স রঙ
+// (Tailwind ক্লাস ক্যানভাসে কাজ করে না, তাই আলাদা ম্যাপ)
+export const SUBJECT_ACCENT_HEX = {
+  circuit: "#f59e0b",
+  electronics: "#3b82f6",
+  power: "#ef4444",
+  machines: "#10b981",
+  communication: "#d946ef",
+  control: "#06b6d4",
+  digital: "#84cc16",
+  powerElectronics: "#f43f5e",
+  signals: "#8b5cf6",
+  electromagnetic: "#14b8a6",
+};
+
+export const IMPORTANCE_HEX = {
+  critical: "#f87171",
+  high: "#fb923c",
+  medium: "#facc15",
+  low: "#4ade80",
+};
+
 // শুধু গ্রেডিয়েন্ট লুকআপ (কার্ড/মোডালে দ্রুত ব্যবহারের জন্য)
 export const SUBJECT_GRADIENTS = Object.fromEntries(
   Object.entries(SUBJECT_META).map(([id, m]) => [id, m.gradient])

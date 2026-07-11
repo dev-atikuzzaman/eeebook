@@ -9,6 +9,7 @@ export default function Header({
   subjectCounts,
   view, setView,
   favorites, isOnline, loading,
+  onOpenQuiz, onExportPdf, exporting,
 }) {
   return (
     <header className="sticky top-0 z-50 border-b border-amber-500/20 bg-gray-950/95 backdrop-blur-xl">
@@ -39,6 +40,25 @@ export default function Header({
 
           {/* Controls */}
           <div className="flex items-center gap-2 flex-shrink-0">
+            <button
+              onClick={onOpenQuiz}
+              title="কুইজ মোড"
+              className="w-8 h-8 rounded-lg bg-gray-900 border border-gray-700 text-gray-400 hover:text-purple-400 hover:border-purple-500/50 transition flex items-center justify-center text-sm"
+            >
+              🧠
+            </button>
+            <button
+              onClick={onExportPdf}
+              disabled={exporting}
+              title="PDF এক্সপোর্ট"
+              className="w-8 h-8 rounded-lg bg-gray-900 border border-gray-700 text-gray-400 hover:text-red-400 hover:border-red-500/50 transition flex items-center justify-center text-sm disabled:opacity-40"
+            >
+              {exporting ? (
+                <span className="w-3.5 h-3.5 border-2 border-gray-500 border-t-red-400 rounded-full animate-spin" />
+              ) : (
+                "📄"
+              )}
+            </button>
             <button
               onClick={() => setView((v) => (v === "grid" ? "list" : "grid"))}
               title="Toggle view"

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { IMPORTANCE_COLORS, SUBJECT_GRADIENTS, SUBJECT_META, TAB_LIST } from "./constants";
 import Icon from "./icons";
+import { exportTermToPdf } from "../lib/pdfExport";
 
 export default function TermModal({ term, isFav, onFav, onClose, activeTab, setActiveTab }) {
   const [copied, setCopied] = useState(false);
+  const [exportingPdf, setExportingPdf] = useState(false);
   const importance = IMPORTANCE_COLORS[term.importance] || IMPORTANCE_COLORS.medium;
   const grad = SUBJECT_GRADIENTS[term.subject] || "from-gray-500 to-gray-600";
   const subjectMeta = SUBJECT_META[term.subject];
@@ -26,6 +28,18 @@ export default function TermModal({ term, isFav, onFav, onClose, activeTab, setA
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     });
+  };
+
+  const handleExportPdf = async () => {
+    if (exportingPdf) return;
+    setExportingPdf(true);
+    try {
+      await exportTermToPdf(term);
+    } catch (e) {
+      console.error("PDF export failed:", e);
+    } finally {
+      setExportingPdf(false);
+    }
   };
 
   const importanceWidth = { critical: "100%", high: "75%", medium: "50%", low: "25%" };
@@ -73,6 +87,18 @@ export default function TermModal({ term, isFav, onFav, onClose, activeTab, setA
                 <p className="text-white/75 text-sm mt-1 font-medium">{term.short}</p>
               </div>
               <div className="flex gap-2 flex-shrink-0">
+                <button
+                  onClick={handleExportPdf}
+                  disabled={exportingPdf}
+                  title="PDF এক্সপোর্ট"
+                  className="w-10 h-10 rounded-xl bg-black/25 backdrop-blur flex items-center justify-center text-white/70 hover:text-white transition disabled:opacity-50"
+                >
+                  {exportingPdf ? (
+                    <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                  ) : (
+                    <span className="text-lg">📄</span>
+                  )}
+                </button>
                 <button
                   onClick={onFav}
                   className={`w-10 h-10 rounded-xl bg-black/25 backdrop-blur flex items-center justify-center text-xl transition-transform hover:scale-110 ${isFav ? "text-yellow-400" : "text-white/60 hover:text-yellow-400"}`}
