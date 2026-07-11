@@ -70,20 +70,22 @@ electrodict-eee/
 │   ├── sw.js                # Service Worker (offline)
 │   ├── favicon.ico / logo192.png / logo512.png
 ├── src/
-│   ├── App.js               # Main app + Supabase real-time
+│   ├── App.js               # Main app + Supabase real-time + Quiz/PDF handlers
 │   ├── index.js             # Entry point
 │   ├── index.css            # Tailwind + custom styles
 │   ├── lib/
-│   │   └── supabase.js      # Supabase client
+│   │   ├── supabase.js      # Supabase client
+│   │   └── pdfExport.js     # jsPDF + html2canvas ভিত্তিক PDF জেনারেশন (lazy-loaded)
 │   ├── data/
 │   │   └── terms.js         # SUBJECTS + SEED_TERMS (২০০ টার্ম, অফলাইন ফলব্যাক)
 │   └── components/
-│       ├── Header.js        # Search + Subject filter + A-Z filter
+│       ├── Header.js        # Search + Subject filter + A-Z filter + Quiz/PDF বাটন
 │       ├── StatsBar.js      # Stats dashboard
 │       ├── TermCard.js      # Grid/List card (কাস্টম আইকন সহ)
-│       ├── TermModal.js     # Detail modal (৫ ট্যাব)
+│       ├── TermModal.js     # Detail modal (৫ ট্যাব + একক-টার্ম PDF এক্সপোর্ট)
+│       ├── QuizMode.js      # Setup → Playing → Results — multiple-choice কুইজ
 │       ├── icons.js         # ৫৮টি কাস্টম SVG ইঞ্জিনিয়ারিং আইকন
-│       └── constants.js     # Importance রঙ, Subject গ্রেডিয়েন্ট, ট্যাব লিস্ট
+│       └── constants.js     # Importance রঙ, Subject গ্রেডিয়েন্ট/হেক্স, ট্যাব লিস্ট
 ├── supabase_setup.sql       # DB schema + ২০০ টার্ম seed data
 ├── Vercel.json               # Vercel config
 ├── tailwind.config.js
@@ -98,8 +100,10 @@ electrodict-eee/
 - 🔍 **Smart Search** — term, tag, বিষয়, সংজ্ঞা, সূত্র, প্রয়োগ, রেফারেন্স বই — সব খোঁজে
 - 🏷️ **Subject Filter** — ১০টি বিষয় দিয়ে ফিল্টার, প্রতিটির নিজস্ব রঙ
 - 🔤 **A–Z Filter** — অক্ষর দিয়ে ফিল্টার
-- ⭐ **Favorites** — localStorage-এ persist
+- ⭐ **Favorites** — localStorage-এ persist, হেডারে লাইভ কাউন্টার
 - 🧮 **৫-Tab Detail** — সংজ্ঞা, অ্যানালজি, ব্যবহার, সূত্র, প্রয়োগ
+- 🧠 **Quiz Mode** — বিষয় ও প্রশ্ন-সংখ্যা বেছে নিয়ে multiple-choice কুইজ, সেরা স্কোর localStorage-এ সংরক্ষিত, ভুল উত্তরের টার্ম থেকে সরাসরি বিস্তারিত দেখার শর্টকাট
+- 📄 **PDF Export** — হেডার থেকে বর্তমান ফিল্টার অনুযায়ী পুরো লিস্টের "Study Sheet" PDF, অথবা মোডাল থেকে একটি টার্মের সম্পূর্ণ ৫-সেকশন ডিটেইল PDF (lazy-loaded jsPDF + html2canvas, তাই প্রাথমিক bundle ছোট থাকে)
 - 🎨 **কাস্টম SVG আইকন** — প্রতিটি টার্মের জন্য প্রাসঙ্গিক ইঞ্জিনিয়ারিং সিম্বল
 - 🌐 **Online/Offline** indicator
 - 📊 **Stats Dashboard**
@@ -111,7 +115,7 @@ electrodict-eee/
 npm install
 ```
 
-Main: `react`, `react-dom`, `@supabase/supabase-js`
+Main: `react`, `react-dom`, `@supabase/supabase-js`, `jspdf`, `html2canvas`
 Dev: `tailwindcss`, `autoprefixer`, `postcss`
 
 ## 🔧 Local Development
