@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { supabase } from "./lib/supabase";
 import { SEED_TERMS } from "./data/terms";
-import { SUBJECT_ORDER } from "./components/constants";
+import { SUBJECT_ORDER, SUBJECT_META } from "./components/constants";
 import TermCard from "./components/TermCard";
 import TermModal from "./components/TermModal";
 import Header from "./components/Header";
 import StatsBar from "./components/StatsBar";
+import QuizMode from "./components/QuizMode";
+import { exportTermsToPdf } from "./lib/pdfExport";
 
 // Normalize Supabase snake_case → camelCase for UI components
 function normalizeTerm(t) {
@@ -28,6 +30,8 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState(null);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const [showQuiz, setShowQuiz] = useState(false);
+  const [exportingPdf, setExportingPdf] = useState(false);
   const [favorites, setFavorites] = useState(() => {
     try { return JSON.parse(localStorage.getItem("eeeFavs") || "[]"); }
     catch { return []; }
@@ -128,6 +132,38 @@ export default function App() {
     return counts;
   }, [terms]);
 
+  // ── PDF এক্সপোর্ট — বর্তমান ফিল্টার অনুযায়ী দৃশ্যমান টার্মগুলোর একটি স্টাডি-শিট তৈরি করে
+  const handleExportPdf = useCallback(async () => {
+    if (exportingPdf || filtered.length === 0) return;
+    setExportingPdf(true);
+    try {
+      const subtitleParts = [];
+      if (selectedSubject !== "ALL") subtitleParts.push(SUBJECT_META[selectedSubject]?.bn);
+      if (selectedLetter !== "ALL") subtitleParts.push(`অক্ষর: ${selectedLetter}`);
+      if (search.trim()) subtitleParts.push(`সার্চ: "${search.trim()}"`);
+      await exportTermsToPdf(filtered, {
+        title: "ElectroDict — Study Sheet",
+        subtitle: subtitleParts.join(" · ") || "সকল বিষয়",
+      });
+      showToast("📄 PDF ডাউনলোড হয়েছে!");
+    } catch (e) {
+      console.error("PDF export failed:", e);
+      showToast("⚠️ PDF তৈরি করা যায়নি, আবার চেষ্টা করুন");
+    } finally {
+      setExportingPdf(false);
+    }
+  }, [filtered, exportingPdf, selectedSubject, selectedLetter, search, showToast]);
+
+  // ── কুইজের ফলাফল থেকে সরাসরি একটি টার্মের বিস্তারিত দেখা
+  const handleViewTermFromQuiz = useCallback((termId) => {
+    const t = terms.find((x) => x.id === termId);
+    if (t) {
+      setShowQuiz(false);
+      setActiveTab("definition");
+      setSelectedTerm(t);
+    }
+  }, [terms]);
+
   return (
     <div className="min-h-screen bg-gray-950 text-white font-sans relative overflow-x-hidden">
       {/* Grid background */}
@@ -160,6 +196,9 @@ export default function App() {
           favorites={favorites}
           isOnline={isOnline}
           loading={loading}
+          onOpenQuiz={() => setShowQuiz(true)}
+          onExportPdf={handleExportPdf}
+          exporting={exportingPdf}
         />
 
         <main className="max-w-7xl mx-auto px-4 pb-24">
@@ -225,6 +264,15 @@ export default function App() {
           onClose={() => setSelectedTerm(null)}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
+        />
+      )}
+
+      {/* Quiz Mode */}
+      {showQuiz && (
+        <QuizMode
+          terms={terms}
+          onClose={() => setShowQuiz(false)}
+          onViewTerm={handleViewTermFromQuiz}
         />
       )}
 
