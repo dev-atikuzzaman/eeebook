@@ -1,10 +1,10 @@
 # ⚡ ElectroDict — EEE টেকনিক্যাল ডিকশনারি (PWA)
 
-> ৮০/২০ নীতিতে A–Z ইলেকট্রিক্যাল ও ইলেকট্রনিক্স ইঞ্জিনিয়ারিং শব্দভাণ্ডার | ১০ বিষয়ে ২০০ টার্ম | Supabase Real-time | PWA
+> ৮০/২০ নীতিতে A–Z ইলেকট্রিক্যাল ও ইলেকট্রনিক্স ইঞ্জিনিয়ারিং শব্দভাণ্ডার | ১০ বিষয়ে ৪০০ টার্ম | Supabase Real-time | PWA
 
 CSHelp (সাইবার সিকিউরিটি ডিকশনারি)-এর একই আর্কিটেকচার ও ডিজাইন লজিক অনুসরণ করে তৈরি, EEE-এর জন্য পুনর্নির্মিত।
 
-## 📚 কভারেজ (১০ বিষয় × ২০ টার্ম)
+## 📚 কভারেজ (১০ বিষয় × ৪০ টার্ম = ৪০০ টার্ম)
 
 | বিষয় | রেফারেন্স বই |
 |---|---|
@@ -26,12 +26,15 @@ CSHelp (সাইবার সিকিউরিটি ডিকশনারি)
 ### ধাপ ১ — Supabase সেটআপ
 
 1. [supabase.com](https://supabase.com) → **New Project** তৈরি করুন
-2. **SQL Editor** → `supabase_setup.sql`-এর সম্পূর্ণ কনটেন্ট paste করুন → **Run** (schema + ২০০ টার্ম একসাথে insert হবে)
-3. **Project Settings → API** থেকে নিন:
+2. **SQL Editor** → `supabase_setup.sql`-এর সম্পূর্ণ কনটেন্ট paste করুন → **Run** (schema + প্রথম ২০০ টার্ম একসাথে insert হবে)
+3. তারপর **SQL Editor**-এ আবার নতুন query খুলে `supabase_additional_terms.sql`-এর সম্পূর্ণ কনটেন্ট paste করে **Run** করুন (বাকি ২০০ টার্ম যোগ হবে, মোট ৪০০)
+4. **Project Settings → API** থেকে নিন:
    - `Project URL` → `REACT_APP_SUPABASE_URL`
    - `anon public key` → `REACT_APP_SUPABASE_ANON_KEY`
 
-> Supabase সেটআপ না করলেও অ্যাপ পুরোপুরি কাজ করবে — তখন `src/data/terms.js`-এর বিল্ট-ইন ২০০ টার্ম অফলাইন-ফার্স্ট ফলব্যাক হিসেবে ব্যবহৃত হবে।
+> Supabase সেটআপ না করলেও অ্যাপ পুরোপুরি কাজ করবে — তখন `src/data/terms.js`-এর বিল্ট-ইন ৪০০ টার্ম অফলাইন-ফার্স্ট ফলব্যাক হিসেবে ব্যবহৃত হবে।
+>
+> **আগে থেকেই `supabase_setup.sql` চালিয়ে থাকলে** (প্রথম ২০০ টার্ম ইতিমধ্যে Supabase-এ আছে), শুধু `supabase_additional_terms.sql` চালালেই নতুন ২০০ টার্ম যোগ হয়ে যাবে — schema আবার তৈরি করার দরকার নেই, `ON CONFLICT DO NOTHING` থাকায় পুরনো ডেটা প্রভাবিত হবে না।
 
 ### ধাপ ২ — GitHub-এ Push
 
@@ -77,7 +80,7 @@ electrodict-eee/
 │   │   ├── supabase.js      # Supabase client
 │   │   └── pdfExport.js     # jsPDF + html2canvas ভিত্তিক PDF জেনারেশন (lazy-loaded)
 │   ├── data/
-│   │   └── terms.js         # SUBJECTS + SEED_TERMS (২০০ টার্ম, অফলাইন ফলব্যাক)
+│   │   └── terms.js         # SUBJECTS + SEED_TERMS (৪০০ টার্ম, অফলাইন ফলব্যাক)
 │   └── components/
 │       ├── Header.js        # Search + Subject filter + A-Z filter + Quiz/PDF বাটন
 │       ├── StatsBar.js      # Stats dashboard
@@ -86,7 +89,8 @@ electrodict-eee/
 │       ├── QuizMode.js      # Setup → Playing → Results — multiple-choice কুইজ
 │       ├── icons.js         # ৫৮টি কাস্টম SVG ইঞ্জিনিয়ারিং আইকন
 │       └── constants.js     # Importance রঙ, Subject গ্রেডিয়েন্ট/হেক্স, ট্যাব লিস্ট
-├── supabase_setup.sql       # DB schema + ২০০ টার্ম seed data
+├── supabase_setup.sql       # DB schema + প্রথম ২০০ টার্ম seed data
+├── supabase_additional_terms.sql  # অতিরিক্ত ২০০ টার্ম (ব্যাচ ২, মোট ৪০০-এর জন্য incremental)
 ├── Vercel.json               # Vercel config
 ├── tailwind.config.js
 ├── package.json
